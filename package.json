@@ -1,0 +1,23 @@
+{
+  "name": "codingame",
+  "version": "0.1.0",
+  "description": "TODO",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicolasLeRoux/codingame.git"
+  },
+  "author": "Nicolas Le Roux",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicolasLeRoux/codingame/issues"
+  },
+  "homepage": "https://github.com/NicolasLeRoux/codingame#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}
