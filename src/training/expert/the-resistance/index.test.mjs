@@ -1,5 +1,9 @@
 import chai from 'chai';
-import { solve, wordToMorseCode } from './index.mjs';
+import {
+	solve,
+	wordToMorseCode,
+	extactIndexOfAllStartingOptions
+} from './index.mjs';
 
 const { expect } = chai;
 
@@ -586,6 +590,49 @@ describe(`In 'The Resistance' puzzle,`, () => {
 				expect(morse).to.equal(item.expected);
 			});
 		});
+	});
 
+	describe(`The 'extactIndexOfAllStartingOptions' method,`, () => {
+		it(`Should return an empty array given an empty string.`, () => {
+			const array = extactIndexOfAllStartingOptions('', {}, 0, 0);
+
+			expect(array.length).to.equal(0);
+		});
+
+		it(`Should return an empty array given an empty dictionary.`, () => {
+			const array = extactIndexOfAllStartingOptions('.--.', {}, 0, 4);
+
+			expect(array.length).to.equal(0);
+		});
+
+		it(`Should return an empty array given a null max.`, () => {
+			const array = extactIndexOfAllStartingOptions('.--.', {
+				'.': true
+			}, 0, 0);
+
+			expect(array.length).to.equal(0);
+		});
+
+		it(`Should return [1, 2, 3, 4] with the given inputs.`, () => {
+			const array = extactIndexOfAllStartingOptions('....', {
+				'.': true,
+				'..': true,
+				'...': true,
+				'....': true
+			}, 1, 4);
+
+			expect(array).to.eql([1, 2, 3, 4]);
+		});
+
+		it(`Should return [2, 3] with the given inputs.`, () => {
+			const array = extactIndexOfAllStartingOptions('....', {
+				'.': true,
+				'..': true,
+				'...': true,
+				'....': true
+			}, 2, 3);
+
+			expect(array).to.eql([2, 3]);
+		});
 	});
 });
