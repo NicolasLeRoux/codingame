@@ -78,10 +78,10 @@ generate with the Morse sequence and the dictionary.
 
 ### Constraints
 
-0 < `L` < 100000
-0 < `N` < 100000
-0 < `M` < 20
-0 ≤ `R` < 2^63
+- 0 < `L` < 100000
+- 0 < `N` < 100000
+- 0 < `M` < 20
+- 0 ≤ `R` < 2^63
 
 ## Annex
 
