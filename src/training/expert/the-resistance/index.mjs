@@ -34,8 +34,7 @@ export function solve (readline) {
 	const morseCode = readline();
 	const nbOfWords = readline();
 	const mapOfWord = {};
-	let min = Infinity;
-	let max = 0;
+	let dicLengthSet = new Set();
 
 	for (let i = 0; i < nbOfWords; i++) {
 		const wordAsMorseCode = wordToMorseCode(readline());
@@ -45,9 +44,7 @@ export function solve (readline) {
 		else mapOfWord[wordAsMorseCode]++;
 
 		// Find longest and shortest word
-		const length = wordAsMorseCode.length;
-		if (length < min) min = length;
-		if (length > max) max = length;
+		dicLengthSet.add(wordAsMorseCode.length);
 	}
 
 	// Init of the loop !!!
@@ -66,8 +63,7 @@ export function solve (readline) {
 			mapOfWord,
 			smalest.index,
 			smalest.nbOfSolution,
-			min,
-			max);
+			dicLengthSet);
 
 		array = [...array.slice(1), ...sub]
 			.reduce((acc, item) => {
@@ -115,22 +111,22 @@ export function wordToMorseCode (word, apbt = alphabet) {
  * @param dicAsMap The dictionary as a map of usable word in morse code
  * @param start The index of start
  * @param nbOfSolution The previous number of solution
- * @param min The minimun index to eval
- * @param max The maximum index to eval
+ * @param set A set of length to evaluate
  * @return An array of processed index
  */
-export function processMorseCodeAtIndex (str, dicAsMap, start, nbOfSolution, min, max) {
-	const result = [];
-	const limit = Math.min(max, str.length - start);
+export function processMorseCodeAtIndex (str, dicAsMap, start, nbOfSolution, set) {
+	return [...set]
+		.filter(i => i <= str.length - start)
+		.reduce((acc, i) => {
+			const word = str.slice(start, start + i);
 
-	for (let i = min; i <= limit; i++) {
-		const word = str.slice(start, start + i);
+			if (dicAsMap[word]) {
+				acc.push({
+					index: start + i,
+					nbOfSolution: nbOfSolution * dicAsMap[word]
+				});
+			}
 
-		if (dicAsMap[word]) result.push({
-			index: start + i,
-			nbOfSolution: nbOfSolution * dicAsMap[word]
-		});
-	}
-
-	return result;
+			return [...acc];
+		}, []);
 }

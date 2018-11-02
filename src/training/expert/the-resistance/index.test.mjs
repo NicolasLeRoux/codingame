@@ -82,13 +82,13 @@ describe(`In 'The Resistance' puzzle,`, () => {
 
 	describe(`The 'processMorseCodeAtIndex' method,`, () => {
 		it(`Should return an empty array given an empty string.`, () => {
-			const array = processMorseCodeAtIndex('', {}, 0, 0, 0, 0);
+			const array = processMorseCodeAtIndex('', {}, 0, 0, [1, 2]);
 
 			expect(array.length).to.equal(0);
 		});
 
 		it(`Should return an empty array given an empty dictionary.`, () => {
-			const array = processMorseCodeAtIndex('.--.', {}, 0, 0, 0, 4);
+			const array = processMorseCodeAtIndex('.--.', {}, 0, 0, [1, 2]);
 
 			expect(array.length).to.equal(0);
 		});
@@ -96,7 +96,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		it(`Should return an empty array given a null max.`, () => {
 			const array = processMorseCodeAtIndex('.--.', {
 				'.': 1
-			}, 0, 0, 0, 0);
+			}, 0, 0, [0]);
 
 			expect(array.length).to.equal(0);
 		});
@@ -107,7 +107,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 				'..': 1,
 				'...': 2,
 				'....': 4
-			}, 0, 1, 1, 4);
+			}, 0, 1, [1, 2, 3, 4]);
 
 			expect(array).to.eql([
 				{
@@ -135,7 +135,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 				'..': 5,
 				'...': 3,
 				'....': 2
-			}, 0, 1, 2, 3);
+			}, 0, 1, [2, 3]);
 
 			expect(array).to.eql([
 				{
@@ -155,7 +155,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 				'..': 5,
 				'...': 3,
 				'....': 2
-			}, 0, 3, 2, 3);
+			}, 0, 3, [2, 3]);
 
 			expect(array).to.eql([
 				{
@@ -172,7 +172,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		it(`Should return only one element even if the max go over the string length.`, () => {
 			const array = processMorseCodeAtIndex('..', {
 				'..': 1
-			}, 0, 1, 0, 3);
+			}, 0, 1, [1, 2, 3]);
 
 			expect(array).to.eql([
 				{
