@@ -4,7 +4,7 @@ import path from 'path';
 import {
 	solve,
 	wordToMorseCode,
-	extactSliceOfAllStartingOptions
+	processMorseCodeAtIndex
 } from './index.mjs';
 
 const { expect } = chai;
@@ -80,21 +80,21 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		});
 	});
 
-	describe(`The 'extactSliceOfAllStartingOptions' method,`, () => {
+	describe(`The 'processMorseCodeAtIndex' method,`, () => {
 		it(`Should return an empty array given an empty string.`, () => {
-			const array = extactSliceOfAllStartingOptions('', {}, 0, 0, 0, 0);
+			const array = processMorseCodeAtIndex('', {}, 0, 0, 0, 0);
 
 			expect(array.length).to.equal(0);
 		});
 
 		it(`Should return an empty array given an empty dictionary.`, () => {
-			const array = extactSliceOfAllStartingOptions('.--.', {}, 0, 0, 0, 4);
+			const array = processMorseCodeAtIndex('.--.', {}, 0, 0, 0, 4);
 
 			expect(array.length).to.equal(0);
 		});
 
 		it(`Should return an empty array given a null max.`, () => {
-			const array = extactSliceOfAllStartingOptions('.--.', {
+			const array = processMorseCodeAtIndex('.--.', {
 				'.': 1
 			}, 0, 0, 0, 0);
 
@@ -102,7 +102,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		});
 
 		it(`Should return an array of 4 items with the given inputs.`, () => {
-			const array = extactSliceOfAllStartingOptions('....', {
+			const array = processMorseCodeAtIndex('....', {
 				'.': 1,
 				'..': 1,
 				'...': 2,
@@ -130,7 +130,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		});
 
 		it(`Should return an array of 2 items with the given inputs.`, () => {
-			const array = extactSliceOfAllStartingOptions('....', {
+			const array = processMorseCodeAtIndex('....', {
 				'.': 1,
 				'..': 5,
 				'...': 3,
@@ -150,7 +150,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		});
 
 		it(`Should return an array of 2 items with the given inputs (bis).`, () => {
-			const array = extactSliceOfAllStartingOptions('....', {
+			const array = processMorseCodeAtIndex('....', {
 				'.': 1,
 				'..': 5,
 				'...': 3,
@@ -170,7 +170,7 @@ describe(`In 'The Resistance' puzzle,`, () => {
 		});
 
 		it(`Should return only one element even if the max go over the string length.`, () => {
-			const array = extactSliceOfAllStartingOptions('..', {
+			const array = processMorseCodeAtIndex('..', {
 				'..': 1
 			}, 0, 1, 0, 3);
 

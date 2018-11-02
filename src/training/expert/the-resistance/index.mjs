@@ -33,82 +33,22 @@ export const alphabet = {
 export function solve (readline) {
 	const morseCode = readline();
 	const nbOfWords = readline();
-	const map = {};
+	const mapOfWord = {};
 	let min = Infinity;
 	let max = 0;
 
 	for (let i = 0; i < nbOfWords; i++) {
 		const wordAsMorseCode = wordToMorseCode(readline());
 
-		if (!map[wordAsMorseCode]) map[wordAsMorseCode] = 1;
-		else map[wordAsMorseCode]++;
+		// Build map of word
+		if (!mapOfWord[wordAsMorseCode]) mapOfWord[wordAsMorseCode] = 1;
+		else mapOfWord[wordAsMorseCode]++;
 
+		// Find longest and shortest word
 		const length = wordAsMorseCode.length;
 		if (length < min) min = length;
 		if (length > max) max = length;
 	}
-
-	/**
-	 * TODO:
-	 * 1. Find all starting slice in the given starting
-	 * Ex: '.' and '..' in the string '..-'
-	 * 2. Use the number of option each string got.
-	 * Ex: '...' have 2 options, `EI` and `IE`
-	 * 3. Find the smallest solved length
-	 * Repeate the process.
-	 * 4. reduce the solution with the same length
-	 * Repeate...
-	 */
-
-	// Sample of array to work with
-	/*
-	const sample = [
-		{
-			index: 10,
-			nbOfSolution: 2
-		}
-	];
-	*/
-
-	// The reduction process use the index as a key. Then, the number of solution
-	// should be added.
-
-	// The merge process should eval a sample an split it in n new sample.
-	/*
-	const merged = [
-		{
-			word: '...',
-			length: 3,
-			value: 2
-		},
-		{
-			word: '.',
-			length: 1,
-			value: 1
-		}
-	];
-	*/
-
-	// So, the new sample should look like this now
-	/*
-	const sampleBis = [
-		{
-			index: 10 + 3,
-			nbOfSolution: 2 * 2
-		},
-		{
-			index: 10 + 1,
-			nbOfSolution: 2 * 1
-		}
-	];
-	*/
-
-	// If the eval process return an empty array and the index is different from
-	// the length, this branch is dead... Remove it from the samples.
-
-	// Once every branch match the length of the string, the reducer should add
-	// them. So, at the end, only one item should stay. This is the solution
-	// of the problem !
 
 	// Init of the loop !!!
 	let array = [
@@ -122,7 +62,13 @@ export function solve (readline) {
 
 	do {
 		const smalest = array[0];
-		let sub = extactSliceOfAllStartingOptions(morseCode, map, smalest.index, smalest.nbOfSolution, min, max);
+		let sub = processMorseCodeAtIndex(morseCode,
+			mapOfWord,
+			smalest.index,
+			smalest.nbOfSolution,
+			min,
+			max);
+
 		array = [...array.slice(1), ...sub]
 			.reduce((acc, item) => {
 				let indexed = acc.find(elm => elm.index === item.index);
@@ -146,7 +92,7 @@ export function solve (readline) {
 		}
 		i++;
 
-	} while (isProcessing)
+	} while (isProcessing);
 
 	return !!array[0] ? array[0].nbOfSolution : 0;
 };
@@ -164,16 +110,16 @@ export function wordToMorseCode (word, apbt = alphabet) {
 };
 
 /**
- * Method to extract the slice of all starting options.
+ * Method to process the morse code with a dictionary at a given index.
  * @param str The string input in morse code
  * @param dicAsMap The dictionary as a map of usable word in morse code
  * @param start The index of start
  * @param nbOfSolution The previous number of solution
  * @param min The minimun index to eval
  * @param max The maximum index to eval
- * @return An array of possible starting slice
+ * @return An array of processed index
  */
-export function extactSliceOfAllStartingOptions (str, dicAsMap, start, nbOfSolution, min, max) {
+export function processMorseCodeAtIndex (str, dicAsMap, start, nbOfSolution, min, max) {
 	const result = [];
 	const limit = Math.min(max, str.length - start);
 
