@@ -4,7 +4,8 @@
   "description": "TODO",
   "main": "index.js",
   "scripts": {
-    "test": "mocha-esm ./src/**/**/**/*.test.mjs"
+    "test": "mocha-esm ./src/**/**/**/*.test.mjs",
+    "test:music-scores": "mocha-esm ./src/training/expert/music-scores/*.test.mjs"
   },
   "repository": {
     "type": "git",
