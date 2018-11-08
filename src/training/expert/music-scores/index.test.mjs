@@ -92,6 +92,14 @@ describe(`In 'Music Scores' puzzle,`, () => {
 				expected: [0, 1]
 			},
 			{
+				encodedImage: 'W 2 B 3',
+				expected: [0, 0, 1, 1, 1]
+			},
+			{
+				encodedImage: 'W 1 B 2 W 1',
+				expected: [0, 1, 1, 0]
+			},
+			{
 				encodedImage: 'W 2 B 1 W 1 B 3',
 				expected: [0, 0, 1, 0, 1, 1, 1]
 			}
@@ -101,7 +109,7 @@ describe(`In 'Music Scores' puzzle,`, () => {
 			it(`Should return [${item.expected}] given the following encoded image '${item.encodedImage}'.`, () => {
 				const image = decodeDWE(item.encodedImage);
 
-				expect(image).to.equal(item.expected);
+				expect(image).to.eql(item.expected);
 			});
 		});
 	});
