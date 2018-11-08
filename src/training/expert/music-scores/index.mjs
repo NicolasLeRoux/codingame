@@ -19,14 +19,9 @@ export function solve (readline) {
 export function decodeDWE (encodedImage) {
 	return encodedImage.split(' ')
 		.reduce((acc, item, idx, array) => {
-			let pixels = [];
-
-			if (idx % 2 === 0) {
-				pixels = Array.from({
-						length: +array[idx + 1]
-					})
-					.map(() => item === 'B' ? 1 : 0);
-			}
+			const length = idx % 2 === 0 ? +array[idx + 1] : 0;
+			const pixels = Array.from({ length })
+				.map(() => item === 'B' ? 1 : 0);
 
 			return [...acc, ...pixels];
 		}, []);
