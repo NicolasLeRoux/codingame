@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import {
 	solve,
-	decodeDWE
+	decodeDWE,
+	matchingPercent
 } from './index.mjs';
 
 const { expect } = chai;
@@ -110,6 +111,54 @@ describe(`In 'Music Scores' puzzle,`, () => {
 				const image = decodeDWE(item.encodedImage);
 
 				expect(image).to.eql(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'matchingPercent' method,`, () => {
+		const tests = [
+			{
+				image: [1, 1, 0, 0],
+				pattern: [1, 1, 0, 1],
+				expected: 0.75
+			},
+			{
+				image: [0, 1, 0, 0],
+				pattern: [1, 1, 1, 1],
+				expected: 0.25
+			},
+			{
+				image: [0, 1, 1, 1],
+				pattern: [undefined, 1, 0, undefined],
+				expected: 0.75
+			},
+			{
+				image: [1, 0, 1, 0],
+				pattern: [0, 1, 0, 1],
+				expected: 0
+			},
+			{
+				image: [1, 0, 1, 0],
+				pattern: [1, 0, 1, 0],
+				expected: 1
+			},
+			{
+				image: [1, 1, 1, 1],
+				pattern: [0, 1, 0, 1],
+				expected: 0.5
+			},
+			{
+				image: [1, 0, 1, 0],
+				pattern: [1, undefined, 1, undefined],
+				expected: 1
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should return ${item.expected * 100} % with the given inputs.`, () => {
+				const percent = matchingPercent(item.encodedImage);
+
+				expect(percent).to.equal(item.expected);
 			});
 		});
 	});
