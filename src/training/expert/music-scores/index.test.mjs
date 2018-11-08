@@ -2,7 +2,8 @@ import chai from 'chai';
 import fs from 'fs';
 import path from 'path';
 import {
-	solve
+	solve,
+	decodeDWE
 } from './index.mjs';
 
 const { expect } = chai;
@@ -80,6 +81,27 @@ describe(`In 'Music Scores' puzzle,`, () => {
 				const result = solve(readline(item.fileName));
 
 				expect(result).to.equal(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'decodeDWE' method,`, () => {
+		const tests = [
+			{
+				encodedImage: 'W 1 B 1',
+				expected: [0, 1]
+			},
+			{
+				encodedImage: 'W 2 B 1 W 1 B 3',
+				expected: [0, 0, 1, 0, 1, 1, 1]
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should return [${item.expected}] given the following encoded image '${item.encodedImage}'.`, () => {
+				const image = decodeDWE(item.encodedImage);
+
+				expect(image).to.equal(item.expected);
 			});
 		});
 	});
