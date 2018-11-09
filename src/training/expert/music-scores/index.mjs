@@ -42,5 +42,10 @@ export function decodeDWE (encodedImage) {
  * @return The percent of matching
  */
 export function matchingPercent (image, pattern) {
-	return 0;
+	return image.reduce((acc, item, idx) => {
+			const pixel = pattern[idx];
+			const weight = item === pixel || pixel === undefined ? 1 : 0;
+
+			return acc + weight;
+		}, 0) / image.length;
 }

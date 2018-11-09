@@ -156,7 +156,7 @@ describe(`In 'Music Scores' puzzle,`, () => {
 
 		tests.forEach((item) => {
 			it(`Should return ${item.expected * 100} % with the given inputs.`, () => {
-				const percent = matchingPercent(item.encodedImage);
+				const percent = matchingPercent(item.image, item.pattern);
 
 				expect(percent).to.equal(item.expected);
 			});
