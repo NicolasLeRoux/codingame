@@ -71,7 +71,9 @@ export function cropImage (image, w = 0, h = 0, cw = 0, ch = 0, xo = 0, yo = 0) 
 
 	return Array.from({ length })
 		.map((_item, idx) => {
-			const i = xo + idx % cw + (Math.floor(idx / cw) + yo) * w;
+			const x = idx % cw;
+			const y = Math.floor(idx / cw);
+			const i = x + xo + (y + yo) * w;
 
 			return image[i];
 		});
