@@ -70,9 +70,9 @@ export function cropImage (image, w = 0, h = 0, cw = 0, ch = 0, xo = 0, yo = 0) 
 	const length = cw * ch;
 
 	return Array.from({ length })
-		.reduce((acc, _item, idx) => {
+		.map((_item, idx) => {
 			const i = xo + idx % cw + (Math.floor(idx / cw) + yo) * w;
 
-			return [...acc, image[i]];
-		}, []);
+			return image[i];
+		});
 }
