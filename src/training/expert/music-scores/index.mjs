@@ -49,3 +49,21 @@ export function matchingPercent (image, pattern) {
 			return acc + weight;
 		}, 0) / image.length;
 }
+
+/**
+ * Method to crop an image.
+ *
+ * __Sample:__
+ * - Given an image [0, 1, 2, 3, 4, 5, 6, 7, 8], a width of 2, a height of 2, an
+ * x of 1 and an y of 1 the expected result should be [4, 5, 7, 8]
+ *
+ * @param image The image to evaluate
+ * @param width The width of the cropped image
+ * @param height The height of the cropped image
+ * @param x The offset to use on the horizontal axe
+ * @param y The offset to use on the vertical axe
+ * @return The cropped image.
+ */
+export function cropImage (image, width = 0, height = 0, x = 0, y = 0) {
+	return [];
+}

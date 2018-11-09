@@ -4,7 +4,8 @@ import path from 'path';
 import {
 	solve,
 	decodeDWE,
-	matchingPercent
+	matchingPercent,
+	cropImage
 } from './index.mjs';
 
 const { expect } = chai;
@@ -157,6 +158,27 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		tests.forEach((item) => {
 			it(`Should return ${item.expected * 100} % with the given inputs.`, () => {
 				const percent = matchingPercent(item.image, item.pattern);
+
+				expect(percent).to.equal(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'cropImage' method,`, () => {
+		const tests = [
+			{
+				image: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				width: 2,
+				height: 2,
+				x: 1,
+				y: 1,
+				expected: [4, 5, 7, 8]
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should return [${item.expected}] with the given inputs.`, () => {
+				const percent = cropImage(item.image, item.width, item.height, item.x, item.y);
 
 				expect(percent).to.equal(item.expected);
 			});
