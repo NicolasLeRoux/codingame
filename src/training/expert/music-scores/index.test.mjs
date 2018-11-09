@@ -168,19 +168,61 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		const tests = [
 			{
 				image: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-				width: 2,
-				height: 2,
-				x: 1,
-				y: 1,
+				w: 3,
+				h: 3,
+				cw: 2,
+				ch: 2,
+				xo: 1,
+				yo: 1,
 				expected: [4, 5, 7, 8]
+			},
+			{
+				image: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				w: 3,
+				h: 3,
+				cw: 0,
+				ch: 0,
+				xo: 1,
+				yo: 1,
+				expected: []
+			},
+			{
+				image: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				w: 3,
+				h: 3,
+				cw: 1,
+				ch: 3,
+				xo: 1,
+				yo: 0,
+				expected: [1, 4, 7]
+			},
+			{
+				image: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				w: 3,
+				h: 3,
+				cw: 3,
+				ch: 1,
+				xo: 0,
+				yo: 2,
+				expected: [6, 7, 8]
+			},
+			{
+				image: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				w: 3,
+				h: 3,
+				cw: 2,
+				ch: 2,
+				xo: 2,
+				yo: 2,
+				expected: [8, undefined, undefined, undefined]
 			}
 		];
 
 		tests.forEach((item) => {
 			it(`Should return [${item.expected}] with the given inputs.`, () => {
-				const percent = cropImage(item.image, item.width, item.height, item.x, item.y);
+				const percent = cropImage(item.image, item.w, item.h, item.cw, item.ch, item.xo, item.yo);
 
-				expect(percent).to.equal(item.expected);
+				expect(percent).to.eql(item.expected);
 			});
 		});
 	});

@@ -58,12 +58,21 @@ export function matchingPercent (image, pattern) {
  * x of 1 and an y of 1 the expected result should be [4, 5, 7, 8]
  *
  * @param image The image to evaluate
- * @param width The width of the cropped image
- * @param height The height of the cropped image
- * @param x The offset to use on the horizontal axe
- * @param y The offset to use on the vertical axe
+ * @param w The width of the image to process
+ * @param h The height of the image to process
+ * @param cw The width of the cropped image
+ * @param ch The height of the cropped image
+ * @param xo The offset to use on the horizontal axe
+ * @param yo The offset to use on the vertical axe
  * @return The cropped image.
  */
-export function cropImage (image, width = 0, height = 0, x = 0, y = 0) {
-	return [];
+export function cropImage (image, w = 0, h = 0, cw = 0, ch = 0, xo = 0, yo = 0) {
+	const length = cw * ch;
+
+	return Array.from({ length })
+		.reduce((acc, _item, idx) => {
+			const i = xo + idx % cw + (Math.floor(idx / cw) + yo) * w;
+
+			return [...acc, image[i]];
+		}, []);
 }
