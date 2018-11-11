@@ -156,3 +156,15 @@ export function getMask () {
 	return Array.from({ length })
 		.map((val, idx) => mapOfPixel.get(idx));
 }
+
+/**
+ * Method to extract the five line staff height of a given sheet music.
+ * @param slice A slice of the image to evaluate
+ * @return An array with 5 heigth, one for each line staff.
+ */
+export function extractStaffs (slice) {
+	return slice.map((pixel, idx) => !!pixel ? idx : 0)
+		.filter((heigth, idx, array) => {
+			return !!heigth && array[idx - 1] === 0;
+		});
+}

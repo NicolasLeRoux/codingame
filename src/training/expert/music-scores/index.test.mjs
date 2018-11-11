@@ -7,7 +7,8 @@ import {
 	decodeDWE,
 	matchingPercent,
 	cropImage,
-	getMask
+	getMask,
+	extractStaffs
 } from './index.mjs';
 
 const { expect } = chai;
@@ -248,6 +249,35 @@ describe(`In 'Music Scores' puzzle,`, () => {
 
 		it(`Should have the same number of element as the mask file (svg).`, () => {
 			expect(mask.filter(x => x !== undefined).length).to.equal(nodeList.length);
+		});
+	});
+
+	describe(`The 'extractStaffs' method,`, () => {
+		const tests = [
+			{
+				slice: [0, 0, 0],
+				expected: []
+			},
+			{
+				slice: [0, 1, 0],
+				expected: [1]
+			},
+			{
+				slice: [0, 1, 1],
+				expected: [1]
+			},
+			{
+				slice: [0, 0, 1, 1, 0, 0, 0, 1, 1],
+				expected: [2, 7]
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should have [${item.expected}] as five-line staff heigths.`, () => {
+				const heigths = extractStaffs(item.slice);
+
+				expect(heigths).to.eql(item.expected);
+			});
 		});
 	});
 });
