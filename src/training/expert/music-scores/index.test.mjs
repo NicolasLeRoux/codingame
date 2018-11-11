@@ -1,13 +1,11 @@
 import chai from 'chai';
 import fs from 'fs';
 import path from 'path';
-import jsdom from 'jsdom';
 import {
 	solve,
 	decodeDWE,
 	matchingPercent,
 	cropImage,
-	getMask,
 	calculNbOfBlackPixelOnEachRow,
 	calculNbOfBlackPixelOnEachCol
 } from './index.mjs';
@@ -83,7 +81,12 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		};
 
 		tests.forEach((item) => {
-			it(`Should return ${item.expected} with the given inputs.`, () => {
+			const length = item.expected.length;
+			const maxDisplay = 20;
+			const diplayable = length < maxDisplay ? item.expected
+				: item.expected.slice(0, maxDisplay).concat('...');
+
+			it(`Should return ${diplayable} given the input file ${item.fileName}.`, () => {
 				const result = solve(readline(item.fileName));
 
 				expect(result).to.equal(item.expected);
@@ -228,28 +231,6 @@ describe(`In 'Music Scores' puzzle,`, () => {
 
 				expect(percent).to.eql(item.expected);
 			});
-		});
-	});
-
-	describe(`The 'getMask' method,`, () => {
-		const mask = getMask();
-		const txt = fs.readFileSync(path.resolve(__dirname, 'mask.svg'), 'UTF-8');
-		const dom = new jsdom.JSDOM(txt);
-		const svg = dom.window.document.querySelector('svg');
-		const [w, h] = svg.getAttribute('viewBox').split(' ').slice(2);
-		const nodeList = dom.window.document.querySelectorAll('rect');
-
-		[...nodeList].forEach((svgElm) => {
-			const x = +svgElm.getAttribute('x');
-			const y = +svgElm.getAttribute('y');
-
-			it(`Should have a black pixel at the position {x: ${x}, y: ${y}}.`, () => {
-				expect(mask[x + y * w]).to.equal(1);
-			});
-		});
-
-		it(`Should have the same number of element as the mask file (svg).`, () => {
-			expect(mask.filter(x => x !== undefined).length).to.equal(nodeList.length);
 		});
 	});
 

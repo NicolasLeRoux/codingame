@@ -2,7 +2,129 @@
  * TODO
  */
 export function solve (readline) {
-	return '';
+	const [w, h] = readline().split(' ');
+	const encodedImage = readline();
+	const image = decodeDWE(encodedImage);
+
+	const histogramX = calculNbOfBlackPixelOnEachRow(image, w, h);
+	const thresholdX = 0.8 * Math.max(...histogramX);
+	//console.log(thresholdX);
+	const staffIdx = histogramX.reduce((acc, val, idx) => {
+		return val > thresholdX ? [...acc, idx] : [...acc];
+	}, []);
+	const groupedStaffIdx = staffIdx.reduce((acc, val, idx, array) => {
+		if (val - 1 === array[idx - 1]) {
+			return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
+		} else {
+			return [...acc, [val]];
+		}
+	}, []);
+	const staffGutter = groupedStaffIdx[1][0] - groupedStaffIdx[0].slice(-1)[0];
+	const staffLength = groupedStaffIdx[1].length;
+	const missingStaff = groupedStaffIdx.slice(-1)[0].map(val => val + staffGutter + staffLength - 1);
+	const groupedStaffIdxFull = [...groupedStaffIdx, missingStaff];
+	const staffIdxFull = [].concat(...groupedStaffIdxFull);
+	// console.log(staffIdxFull);
+
+	const histogramY = calculNbOfBlackPixelOnEachCol(image, w, h);
+	const histogramYWthStaffs = calculNbOfBlackPixelOnEachCol(image, w, h, staffIdxFull);
+	const thresholdY = 0.8 * Math.max(...histogramY);
+	//console.log(thresholdY);
+	//console.log(histogramYWthStaffs);
+
+	const tails = histogramY.reduce((acc, val, idx) => {
+			if (val > thresholdY) {
+				return [...acc, idx];
+			} else {
+				return [...acc];
+			}
+		}, [])
+		.reduce((acc, val, idx, array) => {
+			if (val - 1 === array[idx - 1]) {
+				return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
+			} else {
+				return [...acc, [val]];
+			}
+		}, []);
+	const tailLength = tails[0].length;
+
+	const chunks = tails.map((val, idx, array) => {
+			const ratio = val.length * 10;
+			const first = val[0];
+			const last = val.slice(-1)[0];
+			const start = array[idx - 1] ? Math.max(first - ratio, array[idx - 1].slice(-1)[0]) : Math.max(first - ratio, 0);
+			const end = array[idx + 1] ? Math.min(last + ratio, array[idx + 1][0]) : Math.min(last + ratio, w);
+
+			// Here, I need to shorten my range in order to avoid close note. To
+			// do so, I have to find the direction of the note.
+			if (histogramYWthStaffs[first - 1] === 0) {
+				//console.log('Right note.');
+				return [first, end];
+			} else {
+				//console.log('Left note.');
+				return [start, last];
+			}
+			//return [start, end];
+		})
+		.map(array => {
+			const cw = array[1] - array[0];
+			const crop = cropImage(image, w, h, cw, h, array[0], 0);
+			const cropHistogramX = calculNbOfBlackPixelOnEachRow(crop, cw, h);
+
+			return cropHistogramX.map((val, idx, array) => {
+					return staffIdxFull.includes(idx) ? -1 : val;
+				});
+		})
+		.map((histogramX) => {
+			const maxWthStaff = Math.max(...histogramX);
+			const maxIdxs = histogramX.map((val, idx) => {
+					return val >= 0.8 * maxWthStaff ? idx : 0;
+				})
+				.filter(val => !!val);
+			const isFull = maxIdxs.length > groupedStaffIdx[0].length * 2;
+			const centerIdx = isFull ? maxIdxs[0] + Math.floor((maxIdxs.slice().pop() - maxIdxs[0]) / 2)
+				: Math.floor((maxIdxs.slice(-1)[0] + maxIdxs[0]) / 2);
+			const isCenterOnStaff = staffIdxFull.includes(centerIdx);
+
+			// Here, I need to take the staff line to account in order to find
+			// the true center...
+
+			//console.log(maxIdxs);
+			//console.log('center:', centerIdx);
+			//console.log('isFull:', isFull);
+			//console.log(groupedStaffIdxFull);
+
+			let letter;
+			if (centerIdx < groupedStaffIdxFull[0][0]) {
+				letter = 'G';
+			} else if (centerIdx <= groupedStaffIdxFull[0].slice().pop()) {
+				letter = 'F';
+			} else if (centerIdx < groupedStaffIdxFull[1][0]) {
+				letter = 'E';
+			} else if (centerIdx <= groupedStaffIdxFull[1].slice().pop()) {
+				letter = 'D';
+			} else if (centerIdx < groupedStaffIdxFull[2][0]) {
+				letter = 'C';
+			} else if (centerIdx <= groupedStaffIdxFull[2].slice().pop()) {
+				letter = 'B';
+			} else if (centerIdx < groupedStaffIdxFull[3][0]) {
+				letter = 'A';
+			} else if (centerIdx <= groupedStaffIdxFull[3].slice().pop()) {
+				letter = 'G';
+			} else if (centerIdx < groupedStaffIdxFull[4][0]) {
+				letter = 'F';
+			} else if (centerIdx <= groupedStaffIdxFull[4].slice().pop()) {
+				letter = 'E';
+			} else if (centerIdx < groupedStaffIdxFull[5][0]) {
+				letter = 'D';
+			} else if (centerIdx <= groupedStaffIdxFull[5].slice().pop()) {
+				letter = 'C';
+			}
+
+			return letter + (isFull ? 'Q' : 'H');
+		});
+
+	return chunks.join(' ');
 };
 
 /**
@@ -80,84 +202,6 @@ export function cropImage (image, w = 0, h = 0, cw = 0, ch = 0, xo = 0, yo = 0) 
 }
 
 /**
- * Method to build the mask (or pattern) to find in the image.
- */
-export function getMask () {
-	const w = 22;
-	const h = 21;
-	const length = w * h;
-	const mapOfPixel = new Map([
-		// Row n°0
-		[6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1], [14, 1],
-		[15, 1],
-		// Row n°1
-		[5 + w, 1], [6 + w, 1], [7 + w, 1], [8 + w, 1], [9 + w, 1], [10 + w, 1],
-		[11 + w, 1], [12 + w, 1], [13 + w, 1], [14 + w, 1], [15 + w, 1], [16 + w, 1],
-		// Row n°2
-		[3 + w * 2, 1], [4 + w * 2, 1], [5 + w * 2, 1], [6 + w * 2, 1],
-		[15 + w * 2, 1], [16 + w * 2, 1], [17 + w * 2, 1], [18 + w * 2, 1],
-		// Row n°3
-		[3 + w * 3, 1], [4 + w * 3, 1],
-		[17 + w * 3, 1], [18 + w * 3, 1],
-		// Row n°4
-		[2 + w * 4, 1], [3 + w * 4, 1],
-		[18 + w * 4, 1], [19 + w * 4, 1],
-		// Row n°5
-		[1 + w * 5, 1], [2 + w * 5, 1], [3 + w * 5, 1],
-		[18 + w * 5, 1], [19 + w * 5, 1], [20 + w * 5, 1],
-		// Row n°6
-		[1 + w * 6, 1], [2 + w * 6, 1],
-		[19 + w * 6, 1], [20 + w * 6, 1],
-		// Row n°7
-		[w * 7, 1], [1 + w * 7, 1], [2 + w * 7, 1],
-		[19 + w * 7, 1], [20 + w * 7, 1], [21 + w * 7, 1],
-		// Row n°8
-		[w * 8, 1], [1 + w * 8, 1],
-		[20 + w * 8, 1], [21 + w * 8, 1],
-		// Row n°9
-		[w * 9, 1], [1 + w * 9, 1],
-		[20 + w * 9, 1], [21 + w * 9, 1],
-		// Row n°10
-		[w * 10, 1], [1 + w * 10, 1],
-		[20 + w * 10, 1], [21 + w * 10, 1],
-		// Row n°11
-		[w * 11, 1], [1 + w * 11, 1],
-		[20 + w * 11, 1], [21 + w * 11, 1],
-		// Row n°12
-		[w * 12, 1], [1 + w * 12, 1],
-		[20 + w * 12, 1], [21 + w * 12, 1],
-		// Row n°13
-		[w * 13, 1], [1 + w * 13, 1], [2 + w * 13, 1],
-		[19 + w * 13, 1], [20 + w * 13, 1], [21 + w * 13, 1],
-		// Row n°14
-		[1 + w * 14, 1], [2 + w * 14, 1],
-		[19 + w * 14, 1], [20 + w * 14, 1],
-		// Row n°15
-		[1 + w * 15, 1], [2 + w * 15, 1], [3 + w * 15, 1],
-		[18 + w * 15, 1], [19 + w * 15, 1], [20 + w * 15, 1],
-		// Row n°16
-		[2 + w * 16, 1], [3 + w * 16, 1],
-		[18 + w * 16, 1], [19 + w * 16, 1],
-		// Row n°17
-		[3 + w * 17, 1], [4 + w * 17, 1],
-		[17 + w * 17, 1], [18 + w * 17, 1],
-		// Row n°18
-		[3 + w * 18, 1], [4 + w * 18, 1], [5 + w * 18, 1], [6 + w * 18, 1],
-		[15 + w * 18, 1], [16 + w * 18, 1], [17 + w * 18, 1], [18 + w * 18, 1],
-		// Row n°19
-		[5 + w * 19, 1], [6 + w * 19, 1], [7 + w * 19, 1], [8 + w * 19, 1], [9 + w * 19, 1],
-		[10 + w * 19, 1], [11 + w * 19, 1], [12 + w * 19, 1], [13 + w * 19, 1], [14 + w * 19, 1],
-		[15 + w * 19, 1], [16 + w * 19, 1],
-		// Row n°20
-		[6 + w * 20, 1], [7 + w * 20, 1], [8 + w * 20, 1], [9 + w * 20, 1], [10 + w * 20, 1],
-		[11 + w * 20, 1], [12 + w * 20, 1], [13 + w * 20, 1], [14 + w * 20, 1], [15 + w * 20, 1]
-	]);
-
-	return Array.from({ length })
-		.map((val, idx) => mapOfPixel.get(idx));
-}
-
-/**
  * Method to calcul the number of black pixel on each row.
  * @param image The image to evaluate
  * @param w The width of the image
@@ -181,12 +225,16 @@ export function calculNbOfBlackPixelOnEachRow (image, w = 0, h = 0) {
  * @param h The height of the image
  * @return An array of the number of black pixel
  */
-export function calculNbOfBlackPixelOnEachCol (image, w = 0, h = 0) {
+export function calculNbOfBlackPixelOnEachCol (image, w = 0, h = 0, skips = []) {
 	return Array.from({ length: w })
 		.map((_, iw) => {
 			return Array.from({ length: h })
 				.reduce((acc, _, ih) => {
-					return acc + image[iw + w * ih];
+					if (skips.includes(ih)) {
+						return acc;
+					} else {
+						return acc + image[iw + w * ih];
+					}
 				}, 0);
 		});
 }
