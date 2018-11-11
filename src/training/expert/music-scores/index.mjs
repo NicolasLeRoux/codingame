@@ -17,15 +17,15 @@ export function solve (readline) {
  * @return A array of black or white pixel (0 for white and 1 for black)
  */
 export function decodeDWE (encodedImage) {
-	return encodedImage.split(' ')
-		.reduce((acc, item, idx, array) => {
+	const chunks = encodedImage.split(' ')
+		.map((item, idx, array) => {
 			const colorCode = item === 'B' ? 1 : 0;
 			const length = idx % 2 === 0 ? +array[idx + 1] : 0;
-			const pixels = Array.from({ length })
+			return Array.from({ length })
 				.fill(colorCode);
+		});
 
-			return [...acc, ...pixels];
-		}, []);
+	return [].concat(...chunks);
 }
 
 /**
