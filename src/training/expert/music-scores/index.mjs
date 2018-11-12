@@ -158,13 +158,18 @@ export function getMask () {
 }
 
 /**
- * Method to extract the five line staff height of a given sheet music.
- * @param slice A slice of the image to evaluate
- * @return An array with 5 heigth, one for each line staff.
+ * Method to calcul the number of black pixel on each row.
+ * @param image The image to evaluate
+ * @param w The width of the image
+ * @param h The height of the image
+ * @return An array of the number of black pixel
  */
-export function extractStaffs (slice) {
-	return slice.map((pixel, idx) => !!pixel ? idx : 0)
-		.filter((heigth, idx, array) => {
-			return !!heigth && array[idx - 1] === 0;
+export function calculNbOfBlackPixelOnEachRow (image, w = 0, h = 0) {
+	return Array.from({ length: h })
+		.map((_, ih) => {
+			return Array.from({ length: w })
+				.reduce((acc, _, iw) => {
+					return acc + image[iw + w * ih];
+				}, 0);
 		});
 }

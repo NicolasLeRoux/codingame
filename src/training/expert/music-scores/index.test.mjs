@@ -8,7 +8,7 @@ import {
 	matchingPercent,
 	cropImage,
 	getMask,
-	extractStaffs
+	calculNbOfBlackPixelOnEachRow
 } from './index.mjs';
 
 const { expect } = chai;
@@ -252,29 +252,37 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		});
 	});
 
-	describe(`The 'extractStaffs' method,`, () => {
+	describe(`The 'calculNbOfBlackPixelOnEachRow' method,`, () => {
 		const tests = [
 			{
-				slice: [0, 0, 0],
+				image: [0, 0, 0, 0],
+				w: 0,
+				h: 0,
 				expected: []
 			},
 			{
-				slice: [0, 1, 0],
-				expected: [1]
+				image: [0, 1, 0, 1],
+				w: 2,
+				h: 2,
+				expected: [1, 1]
 			},
 			{
-				slice: [0, 1, 1],
-				expected: [1]
+				image: [1, 1, 0, 0],
+				w: 2,
+				h: 2,
+				expected: [2, 0]
 			},
 			{
-				slice: [0, 0, 1, 1, 0, 0, 0, 1, 1],
-				expected: [2, 7]
+				image: [0, 1, 1, 1, 0, 0, 0, 1],
+				w: 4,
+				h: 2,
+				expected: [3, 1]
 			}
 		];
 
 		tests.forEach((item) => {
-			it(`Should have [${item.expected}] as five-line staff heigths.`, () => {
-				const heigths = extractStaffs(item.slice);
+			it(`Should have [${item.expected}] as number of black pixel on each row.`, () => {
+				const heigths = calculNbOfBlackPixelOnEachRow(item.image, item.w, item.h);
 
 				expect(heigths).to.eql(item.expected);
 			});
