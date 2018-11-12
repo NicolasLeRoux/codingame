@@ -8,7 +8,8 @@ import {
 	matchingPercent,
 	cropImage,
 	getMask,
-	calculNbOfBlackPixelOnEachRow
+	calculNbOfBlackPixelOnEachRow,
+	calculNbOfBlackPixelOnEachCol
 } from './index.mjs';
 
 const { expect } = chai;
@@ -283,6 +284,43 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		tests.forEach((item) => {
 			it(`Should have [${item.expected}] as number of black pixel on each row.`, () => {
 				const heigths = calculNbOfBlackPixelOnEachRow(item.image, item.w, item.h);
+
+				expect(heigths).to.eql(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'calculNbOfBlackPixelOnEachCol' method,`, () => {
+		const tests = [
+			{
+				image: [0, 0, 0, 0],
+				w: 0,
+				h: 0,
+				expected: []
+			},
+			{
+				image: [0, 1, 0, 1],
+				w: 2,
+				h: 2,
+				expected: [0, 2]
+			},
+			{
+				image: [1, 1, 0, 0],
+				w: 2,
+				h: 2,
+				expected: [1, 1]
+			},
+			{
+				image: [0, 1, 1, 1, 0, 0, 0, 1],
+				w: 4,
+				h: 2,
+				expected: [0, 1, 1, 2]
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should have [${item.expected}] as number of black pixel on each col.`, () => {
+				const heigths = calculNbOfBlackPixelOnEachCol(item.image, item.w, item.h);
 
 				expect(heigths).to.eql(item.expected);
 			});

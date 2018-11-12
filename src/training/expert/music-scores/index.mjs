@@ -173,3 +173,20 @@ export function calculNbOfBlackPixelOnEachRow (image, w = 0, h = 0) {
 				}, 0);
 		});
 }
+
+/**
+ * Method to calcul the number of black pixel on each col.
+ * @param image The image to evaluate
+ * @param w The width of the image
+ * @param h The height of the image
+ * @return An array of the number of black pixel
+ */
+export function calculNbOfBlackPixelOnEachCol (image, w = 0, h = 0) {
+	return Array.from({ length: w })
+		.map((_, iw) => {
+			return Array.from({ length: h })
+				.reduce((acc, _, ih) => {
+					return acc + image[iw + w * ih];
+				}, 0);
+		});
+}
