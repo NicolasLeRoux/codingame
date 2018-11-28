@@ -59,10 +59,10 @@ export function solve (readline) {
 			// do so, I have to find the direction of the note.
 			if (histogramYWthStaffs[first - 1] === 0) {
 				//console.log('Right note.');
-				return [first, end];
+				return [last + 1, end];
 			} else {
 				//console.log('Left note.');
-				return [start, last];
+				return [start, first - 1];
 			}
 			//return [start, end];
 		})
@@ -76,23 +76,21 @@ export function solve (readline) {
 				});
 		})
 		.map((histogramX) => {
-			const maxWthStaff = Math.max(...histogramX);
-			const maxIdxs = histogramX.map((val, idx) => {
-					return val >= 0.8 * maxWthStaff ? idx : 0;
-				})
+			const noteIdxs = histogramX.map((val, idx) => val > 0 ? idx : 0)
 				.filter(val => !!val);
-			const isFull = maxIdxs.length > groupedStaffIdx[0].length * 2;
-			const centerIdx = isFull ? maxIdxs[0] + Math.floor((maxIdxs.slice().pop() - maxIdxs[0]) / 2)
-				: Math.floor((maxIdxs.slice(-1)[0] + maxIdxs[0]) / 2);
+			const noteDiameter = noteIdxs.slice().pop() - noteIdxs[0] + 1;
+			const noteNbPixel = histogramX.filter(val => !!val)
+				.reduce((acc, val) => acc + val);
+			const isFull = noteNbPixel > (noteDiameter ** 2 / 2);
+			const centerIdx = noteIdxs[0] + Math.floor(noteDiameter / 2) - 1;
 			const isCenterOnStaff = staffIdxFull.includes(centerIdx);
 
-			// Here, I need to take the staff line to account in order to find
-			// the true center...
-
-			//console.log(maxIdxs);
+			//console.log('histogramX', histogramX);
+			//console.log('isFull:', isFull);
+			//console.log('maxIdxs:', maxIdxs);
 			//console.log('center:', centerIdx);
 			//console.log('isFull:', isFull);
-			//console.log(groupedStaffIdxFull);
+			//console.log('staffs:', groupedStaffIdxFull);
 
 			let letter;
 			if (centerIdx < groupedStaffIdxFull[0][0]) {
