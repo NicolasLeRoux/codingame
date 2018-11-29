@@ -7,11 +7,7 @@ export function solve (readline) {
 	const image = decodeDWE(encodedImage);
 
 	const histogramX = sumBlackPixelOnEachRow(image, w, h);
-	const thresholdX = 0.8 * Math.max(...histogramX);
-	//console.log(thresholdX);
-	const staffIdx = histogramX.reduce((acc, val, idx) => {
-		return val > thresholdX ? [...acc, idx] : [...acc];
-	}, []);
+	const staffIdx = getMaxIndexes(histogramX, 20);
 	const groupedStaffIdx = staffIdx.reduce((acc, val, idx, array) => {
 		if (val - 1 === array[idx - 1]) {
 			return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
@@ -28,17 +24,8 @@ export function solve (readline) {
 
 	const histogramY = sumBlackPixelOnEachCol(image, w, h);
 	const histogramYWthStaffs = sumBlackPixelOnEachCol(image, w, h, staffIdxFull);
-	const thresholdY = 0.8 * Math.max(...histogramY);
-	//console.log(thresholdY);
-	//console.log(histogramYWthStaffs);
 
-	const tails = histogramY.reduce((acc, val, idx) => {
-			if (val > thresholdY) {
-				return [...acc, idx];
-			} else {
-				return [...acc];
-			}
-		}, [])
+	const tails = getMaxIndexes(histogramY, 20)
 		.reduce((acc, val, idx, array) => {
 			if (val - 1 === array[idx - 1]) {
 				return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
@@ -235,4 +222,18 @@ export function sumBlackPixelOnEachCol (image, w = 0, h = 0, skips = []) {
 					}
 				}, 0);
 		});
+}
+
+/**
+ * Method to get the index of maximum values given a factor of safety.
+ * @param array The array to evaluate
+ * @param factorOfSafety The factor of safety in percent (Ex: 20 for 20%)
+ * @return An array with the matching indexes
+ */
+export function getMaxIndexes (array = [], factorOfSafety = 0) {
+	const threshold = (1 - factorOfSafety / 100) * Math.max(...array);
+
+	return array.reduce((acc, val, idx) => {
+		return val >= threshold ? [...acc, idx] : [...acc];
+	}, []);
 }

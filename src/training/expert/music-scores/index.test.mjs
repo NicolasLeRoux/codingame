@@ -7,7 +7,8 @@ import {
 	matchingPercent,
 	cropImage,
 	sumBlackPixelOnEachRow,
-	sumBlackPixelOnEachCol
+	sumBlackPixelOnEachCol,
+	getMaxIndexes
 } from './index.mjs';
 
 const { expect } = chai;
@@ -38,7 +39,7 @@ describe(`In 'Music Scores' puzzle,`, () => {
 			},
 			{
 				fileName: 'test05.txt',
-				executionTimeMs: 80,
+				executionTimeMs: 90,
 				expected: 'CQ CQ CQ CQ DQ EQ CQ AQ'
 			},
 			{
@@ -326,6 +327,39 @@ describe(`In 'Music Scores' puzzle,`, () => {
 				const heigths = sumBlackPixelOnEachCol(item.image, item.w, item.h);
 
 				expect(heigths).to.eql(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'getMaxIndexes' method,`, () => {
+		const tests = [
+			{
+				array: [],
+				factorOfSafety: 0,
+				expected: []
+			},
+			{
+				array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				factorOfSafety: 0,
+				expected: [10]
+			},
+			{
+				array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				factorOfSafety: 20,
+				expected: [8, 9, 10]
+			},
+			{
+				array: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+				factorOfSafety: 50,
+				expected: [0, 1, 2, 3, 4, 5]
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should return [${item.expected}] given a factor of safety of ${item.factorOfSafety}%.`, () => {
+				const array = getMaxIndexes(item.array, item.factorOfSafety);
+
+				expect(array).to.eql(item.expected);
 			});
 		});
 	});
