@@ -49,7 +49,7 @@ export function solve (readline) {
 	const tailLength = tails[0].length;
 
 	const chunks = tails.map((val, idx, array) => {
-			const ratio = val.length * 10;
+			const ratio = val.length * 8;
 			const first = val[0];
 			const last = val.slice(-1)[0];
 			const start = array[idx - 1] ? Math.max(first - ratio, array[idx - 1].slice(-1)[0]) : Math.max(first - ratio, 0);
@@ -81,13 +81,13 @@ export function solve (readline) {
 			const noteDiameter = noteIdxs.slice().pop() - noteIdxs[0] + 1;
 			const noteNbPixel = histogramX.filter(val => !!val)
 				.reduce((acc, val) => acc + val);
-			const isFull = noteNbPixel > (noteDiameter ** 2 / 2);
+			const isFull = noteNbPixel > (noteDiameter ** 2 / 3);
 			const centerIdx = noteIdxs[0] + Math.floor(noteDiameter / 2) - 1;
 			const isCenterOnStaff = staffIdxFull.includes(centerIdx);
 
 			//console.log('histogramX', histogramX);
-			//console.log('isFull:', isFull);
-			//console.log('maxIdxs:', maxIdxs);
+			//console.log('noteDiameter:', noteDiameter);
+			//console.log('noteNbPixel:', noteNbPixel);
 			//console.log('center:', centerIdx);
 			//console.log('isFull:', isFull);
 			//console.log('staffs:', groupedStaffIdxFull);
