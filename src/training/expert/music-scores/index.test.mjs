@@ -81,15 +81,16 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		};
 
 		tests.forEach((item) => {
-			const length = item.expected.length;
-			const maxDisplay = 20;
-			const diplayable = length < maxDisplay ? item.expected
-				: item.expected.slice(0, maxDisplay).concat('...');
-
-			it(`Should return ${diplayable} given the input file ${item.fileName}.`, () => {
+			describe(`Given the input file ${item.fileName},`, () => {
+				const expectedNotes = item.expected.split(' ');
 				const result = solve(readline(item.fileName));
+				const notes = result.split(' ');
 
-				expect(result).to.equal(item.expected);
+				expectedNotes.forEach((note, idx) => {
+					it(`Should return '${note}' for the ${idx + 1}th note.`, () => {
+						expect(notes[idx]).to.equal(note);
+					});
+				});
 			});
 		});
 	});
