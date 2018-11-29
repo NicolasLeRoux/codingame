@@ -18,50 +18,62 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		const tests = [
 			{
 				fileName: 'test01.txt',
+				executionTimeMs: 25,
 				expected: 'AQ'
 			},
 			{
 				fileName: 'test02.txt',
+				executionTimeMs: 25,
 				expected: 'BQ'
 			},
 			{
 				fileName: 'test03.txt',
+				executionTimeMs: 25,
 				expected: 'AH'
 			},
 			{
 				fileName: 'test04.txt',
+				executionTimeMs: 25,
 				expected: 'BH'
 			},
 			{
 				fileName: 'test05.txt',
+				executionTimeMs: 80,
 				expected: 'CQ CQ CQ CQ DQ EQ CQ AQ'
 			},
 			{
 				fileName: 'test06.txt',
+				executionTimeMs: 80,
 				expected: 'DH EH FH AH CH EH DH'
 			},
 			{
 				fileName: 'test07.txt',
+				executionTimeMs: 90,
 				expected: 'EQ FH GQ AH BQ CH DQ EH FQ'
 			},
 			{
 				fileName: 'test08.txt',
+				executionTimeMs: 100,
 				expected: 'CQ CQ CQ DQ EH DH CQ EQ DQ DQ CH'
 			},
 			{
 				fileName: 'test09.txt',
+				executionTimeMs: 110,
 				expected: 'BQ CH DH EH FQ GQ GQ BQ DH BQ'
 			},
 			{
 				fileName: 'test10.txt',
+				executionTimeMs: 40,
 				expected: 'BQ CH DH EH FQ GQ GQ BQ DH BQ BQ CH DH EH FQ GQ GQ BQ DH BQ'
 			},
 			{
 				fileName: 'test11.txt',
+				executionTimeMs: 1300,
 				expected: 'CH CQ DQ CH EH CQ CQ AQ CH EQ DH CQ CQ DH CQ DQ CH CQ DQ EQ FQ AQ BQ CQ DQ EQ FQ GH CH CQ DQ CH EH CQ CQ AQ CH EQ DH CQ CQ DH CQ DQ CH CQ DQ EQ FQ AQ BQ CQ DQ EQ FQ GH CH CQ DQ CH EH CQ CQ AQ CH EQ DH CQ CQ DH CQ DQ CH CQ DQ EQ FQ AQ BQ CQ DQ EQ FQ GH'
 			},
 			{
 				fileName: 'test12.txt',
+				executionTimeMs: 1300,
 				expected: 'FH CH EQ BQ EH EH FQ AQ CH AQ EH DQ DQ CH EH CH FQ EQ CQ GH CH EQ FQ EH BQ GH BH FQ CQ FH AH DH GQ AH DQ FH FQ GH DH CH EQ GH EH EH GH BH GQ BH FH CQ CQ FH DH BH EQ CQ GQ CQ DH FH AH FQ CH DH FH EQ EQ BH DQ FQ GQ DH CH GH FQ EH CQ EQ AQ GQ DH EQ CQ FH AQ DQ FH AH FQ EQ'
 			}
 		];
@@ -85,6 +97,15 @@ describe(`In 'Music Scores' puzzle,`, () => {
 				const expectedNotes = item.expected.split(' ');
 				const result = solve(readline(item.fileName));
 				const notes = result.split(' ');
+
+				it(`Should run in less than ${item.executionTimeMs} ms.`, () => {
+					const time = process.hrtime();
+					solve(readline(item.fileName));
+					const diff = process.hrtime(time);
+					const ms = diff[0] * 1e3 + Math.ceil(diff[1] / 1e6);
+
+					expect(ms).to.be.below(item.executionTimeMs);
+				});
 
 				expectedNotes.forEach((note, idx) => {
 					it(`Should return '${note}' for the ${idx + 1}th note.`, () => {
