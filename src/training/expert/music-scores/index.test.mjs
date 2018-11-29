@@ -8,7 +8,8 @@ import {
 	cropImage,
 	sumBlackPixelOnEachRow,
 	sumBlackPixelOnEachCol,
-	getMaxIndexes
+	getMaxIndexes,
+	groupAdjacentNumber
 } from './index.mjs';
 
 const { expect } = chai;
@@ -358,6 +359,31 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		tests.forEach((item) => {
 			it(`Should return [${item.expected}] given a factor of safety of ${item.factorOfSafety}%.`, () => {
 				const array = getMaxIndexes(item.array, item.factorOfSafety);
+
+				expect(array).to.eql(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'groupAdjacentNumber' method,`, () => {
+		const tests = [
+			{
+				array: [],
+				expected: []
+			},
+			{
+				array: [1, 2, 3],
+				expected: [[1, 2, 3]]
+			},
+			{
+				array: [1, 2, 4, 5],
+				expected: [[1, 2], [4, 5]]
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should return ${item.expected.length} groups with the input [${item.array}].`, () => {
+				const array = groupAdjacentNumber(item.array);
 
 				expect(array).to.eql(item.expected);
 			});

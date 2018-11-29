@@ -8,13 +8,7 @@ export function solve (readline) {
 
 	const histogramX = sumBlackPixelOnEachRow(image, w, h);
 	const staffIdx = getMaxIndexes(histogramX, 20);
-	const groupedStaffIdx = staffIdx.reduce((acc, val, idx, array) => {
-		if (val - 1 === array[idx - 1]) {
-			return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
-		} else {
-			return [...acc, [val]];
-		}
-	}, []);
+	const groupedStaffIdx = groupAdjacentNumber(staffIdx);
 	const staffGutter = groupedStaffIdx[1][0] - groupedStaffIdx[0].slice(-1)[0];
 	const staffLength = groupedStaffIdx[1].length;
 	const missingStaff = groupedStaffIdx.slice(-1)[0].map(val => val + staffGutter + staffLength - 1);
@@ -25,14 +19,7 @@ export function solve (readline) {
 	const histogramY = sumBlackPixelOnEachCol(image, w, h);
 	const histogramYWthStaffs = sumBlackPixelOnEachCol(image, w, h, staffIdxFull);
 
-	const tails = getMaxIndexes(histogramY, 20)
-		.reduce((acc, val, idx, array) => {
-			if (val - 1 === array[idx - 1]) {
-				return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
-			} else {
-				return [...acc, [val]];
-			}
-		}, []);
+	const tails = groupAdjacentNumber(getMaxIndexes(histogramY, 20));
 	const tailLength = tails[0].length;
 
 	const chunks = tails.map((val, idx, array) => {
@@ -235,5 +222,20 @@ export function getMaxIndexes (array = [], factorOfSafety = 0) {
 
 	return array.reduce((acc, val, idx) => {
 		return val >= threshold ? [...acc, idx] : [...acc];
+	}, []);
+}
+
+/**
+ * Method to group adjacent number together.
+ * @param array The array to evaluate
+ * @return An array of grouped adjacent number
+ */
+export function groupAdjacentNumber (array = []) {
+	return array.reduce((acc, val, idx, array) => {
+		if (val - 1 === array[idx - 1]) {
+			return [...acc.slice(0, -1), [...acc.slice(-1)[0], val]];
+		} else {
+			return [...acc, [val]];
+		}
 	}, []);
 }
