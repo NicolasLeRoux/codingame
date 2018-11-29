@@ -6,8 +6,8 @@ import {
 	decodeDWE,
 	matchingPercent,
 	cropImage,
-	calculNbOfBlackPixelOnEachRow,
-	calculNbOfBlackPixelOnEachCol
+	sumBlackPixelOnEachRow,
+	sumBlackPixelOnEachCol
 } from './index.mjs';
 
 const { expect } = chai;
@@ -256,7 +256,7 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		});
 	});
 
-	describe(`The 'calculNbOfBlackPixelOnEachRow' method,`, () => {
+	describe(`The 'sumBlackPixelOnEachRow' method,`, () => {
 		const tests = [
 			{
 				image: [0, 0, 0, 0],
@@ -286,14 +286,14 @@ describe(`In 'Music Scores' puzzle,`, () => {
 
 		tests.forEach((item) => {
 			it(`Should have [${item.expected}] as number of black pixel on each row.`, () => {
-				const heigths = calculNbOfBlackPixelOnEachRow(item.image, item.w, item.h);
+				const heigths = sumBlackPixelOnEachRow(item.image, item.w, item.h);
 
 				expect(heigths).to.eql(item.expected);
 			});
 		});
 	});
 
-	describe(`The 'calculNbOfBlackPixelOnEachCol' method,`, () => {
+	describe(`The 'sumBlackPixelOnEachCol' method,`, () => {
 		const tests = [
 			{
 				image: [0, 0, 0, 0],
@@ -323,7 +323,7 @@ describe(`In 'Music Scores' puzzle,`, () => {
 
 		tests.forEach((item) => {
 			it(`Should have [${item.expected}] as number of black pixel on each col.`, () => {
-				const heigths = calculNbOfBlackPixelOnEachCol(item.image, item.w, item.h);
+				const heigths = sumBlackPixelOnEachCol(item.image, item.w, item.h);
 
 				expect(heigths).to.eql(item.expected);
 			});

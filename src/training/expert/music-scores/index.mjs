@@ -6,7 +6,7 @@ export function solve (readline) {
 	const encodedImage = readline();
 	const image = decodeDWE(encodedImage);
 
-	const histogramX = calculNbOfBlackPixelOnEachRow(image, w, h);
+	const histogramX = sumBlackPixelOnEachRow(image, w, h);
 	const thresholdX = 0.8 * Math.max(...histogramX);
 	//console.log(thresholdX);
 	const staffIdx = histogramX.reduce((acc, val, idx) => {
@@ -26,8 +26,8 @@ export function solve (readline) {
 	const staffIdxFull = [].concat(...groupedStaffIdxFull);
 	// console.log(staffIdxFull);
 
-	const histogramY = calculNbOfBlackPixelOnEachCol(image, w, h);
-	const histogramYWthStaffs = calculNbOfBlackPixelOnEachCol(image, w, h, staffIdxFull);
+	const histogramY = sumBlackPixelOnEachCol(image, w, h);
+	const histogramYWthStaffs = sumBlackPixelOnEachCol(image, w, h, staffIdxFull);
 	const thresholdY = 0.8 * Math.max(...histogramY);
 	//console.log(thresholdY);
 	//console.log(histogramYWthStaffs);
@@ -69,7 +69,7 @@ export function solve (readline) {
 		.map(array => {
 			const cw = array[1] - array[0];
 			const crop = cropImage(image, w, h, cw, h, array[0], 0);
-			const cropHistogramX = calculNbOfBlackPixelOnEachRow(crop, cw, h);
+			const cropHistogramX = sumBlackPixelOnEachRow(crop, cw, h);
 
 			return cropHistogramX.map((val, idx, array) => {
 					return staffIdxFull.includes(idx) ? -1 : val;
@@ -200,13 +200,13 @@ export function cropImage (image, w = 0, h = 0, cw = 0, ch = 0, xo = 0, yo = 0) 
 }
 
 /**
- * Method to calcul the number of black pixel on each row.
+ * Method to sum the number of black pixel on each row.
  * @param image The image to evaluate
  * @param w The width of the image
  * @param h The height of the image
  * @return An array of the number of black pixel
  */
-export function calculNbOfBlackPixelOnEachRow (image, w = 0, h = 0) {
+export function sumBlackPixelOnEachRow (image, w = 0, h = 0) {
 	return Array.from({ length: h })
 		.map((_, ih) => {
 			return Array.from({ length: w })
@@ -217,13 +217,13 @@ export function calculNbOfBlackPixelOnEachRow (image, w = 0, h = 0) {
 }
 
 /**
- * Method to calcul the number of black pixel on each col.
+ * Method to sum the number of black pixel on each col.
  * @param image The image to evaluate
  * @param w The width of the image
  * @param h The height of the image
  * @return An array of the number of black pixel
  */
-export function calculNbOfBlackPixelOnEachCol (image, w = 0, h = 0, skips = []) {
+export function sumBlackPixelOnEachCol (image, w = 0, h = 0, skips = []) {
 	return Array.from({ length: w })
 		.map((_, iw) => {
 			return Array.from({ length: h })
