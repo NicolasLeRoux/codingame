@@ -66,34 +66,8 @@ export function solve (readline) {
 			//console.log('isFull:', isFull);
 			//console.log('staffs:', groupedStaffIdxFull);
 
-			let letter;
-			if (centerIdx < groupedStaffIdxFull[0][0]) {
-				letter = 'G';
-			} else if (centerIdx <= groupedStaffIdxFull[0].slice().pop()) {
-				letter = 'F';
-			} else if (centerIdx < groupedStaffIdxFull[1][0]) {
-				letter = 'E';
-			} else if (centerIdx <= groupedStaffIdxFull[1].slice().pop()) {
-				letter = 'D';
-			} else if (centerIdx < groupedStaffIdxFull[2][0]) {
-				letter = 'C';
-			} else if (centerIdx <= groupedStaffIdxFull[2].slice().pop()) {
-				letter = 'B';
-			} else if (centerIdx < groupedStaffIdxFull[3][0]) {
-				letter = 'A';
-			} else if (centerIdx <= groupedStaffIdxFull[3].slice().pop()) {
-				letter = 'G';
-			} else if (centerIdx < groupedStaffIdxFull[4][0]) {
-				letter = 'F';
-			} else if (centerIdx <= groupedStaffIdxFull[4].slice().pop()) {
-				letter = 'E';
-			} else if (centerIdx < groupedStaffIdxFull[5][0]) {
-				letter = 'D';
-			} else if (centerIdx <= groupedStaffIdxFull[5].slice().pop()) {
-				letter = 'C';
-			}
-
-			return letter + (isFull ? 'Q' : 'H');
+			return getNoteSignature(centerIdx, groupedStaffIdxFull)
+				+ (isFull ? 'Q' : 'H');
 		});
 
 	return chunks.join(' ');
@@ -238,4 +212,42 @@ export function groupAdjacentNumber (array = []) {
 			return [...acc, [val]];
 		}
 	}, []);
+}
+
+/**
+ * Method to get the signature of a note given the center and an array of staff.
+ * @param center The index of the center of the note
+ * @param groupedStaff An array of grouped staff
+ * @return The signature of the note in english
+ */
+export function getNoteSignature (center = 0, groupedStaff = []) {
+	let letter;
+
+	if (center < groupedStaff[0][0]) {
+		letter = 'G';
+	} else if (center <= groupedStaff[0].slice().pop()) {
+		letter = 'F';
+	} else if (center < groupedStaff[1][0]) {
+		letter = 'E';
+	} else if (center <= groupedStaff[1].slice().pop()) {
+		letter = 'D';
+	} else if (center < groupedStaff[2][0]) {
+		letter = 'C';
+	} else if (center <= groupedStaff[2].slice().pop()) {
+		letter = 'B';
+	} else if (center < groupedStaff[3][0]) {
+		letter = 'A';
+	} else if (center <= groupedStaff[3].slice().pop()) {
+		letter = 'G';
+	} else if (center < groupedStaff[4][0]) {
+		letter = 'F';
+	} else if (center <= groupedStaff[4].slice().pop()) {
+		letter = 'E';
+	} else if (center < groupedStaff[5][0]) {
+		letter = 'D';
+	} else if (center <= groupedStaff[5].slice().pop()) {
+		letter = 'C';
+	}
+
+	return letter;
 }

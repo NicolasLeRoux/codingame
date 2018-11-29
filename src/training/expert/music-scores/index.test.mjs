@@ -9,7 +9,8 @@ import {
 	sumBlackPixelOnEachRow,
 	sumBlackPixelOnEachCol,
 	getMaxIndexes,
-	groupAdjacentNumber
+	groupAdjacentNumber,
+	getNoteSignature
 } from './index.mjs';
 
 const { expect } = chai;
@@ -384,6 +385,79 @@ describe(`In 'Music Scores' puzzle,`, () => {
 		tests.forEach((item) => {
 			it(`Should return ${item.expected.length} groups with the input [${item.array}].`, () => {
 				const array = groupAdjacentNumber(item.array);
+
+				expect(array).to.eql(item.expected);
+			});
+		});
+	});
+
+	describe(`The 'getNoteSignature' method,`, () => {
+		const tests = [
+			{
+				center: 1,
+				array: [[2]],
+				expected: 'G'
+			},
+			{
+				center: 2,
+				array: [[2]],
+				expected: 'F'
+			},
+			{
+				center: 3,
+				array: [[2], [4]],
+				expected: 'E'
+			},
+			{
+				center: 4,
+				array: [[2], [4]],
+				expected: 'D'
+			},
+			{
+				center: 5,
+				array: [[2], [4], [6]],
+				expected: 'C'
+			},
+			{
+				center: 6,
+				array: [[2], [4], [6]],
+				expected: 'B'
+			},
+			{
+				center: 7,
+				array: [[2], [4], [6], [8]],
+				expected: 'A'
+			},
+			{
+				center: 8,
+				array: [[2], [4], [6], [8]],
+				expected: 'G'
+			},
+			{
+				center: 9,
+				array: [[2], [4], [6], [8], [10]],
+				expected: 'F'
+			},
+			{
+				center: 10,
+				array: [[2], [4], [6], [8], [10]],
+				expected: 'E'
+			},
+			{
+				center: 11,
+				array: [[2], [4], [6], [8], [10], [12]],
+				expected: 'D'
+			},
+			{
+				center: 12,
+				array: [[2], [4], [6], [8], [10], [12]],
+				expected: 'C'
+			}
+		];
+
+		tests.forEach((item) => {
+			it(`Should return ${item.expected} given the center index at ${item.center}.`, () => {
+				const array = getNoteSignature(item.center, item.array);
 
 				expect(array).to.eql(item.expected);
 			});
